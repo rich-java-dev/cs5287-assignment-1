@@ -1,5 +1,5 @@
 import os   # need this for popen
-import time # for sleep
+import time  # for sleep
 from kafka import KafkaConsumer  # consumer of events
 
 # We can make this more sophisticated/elegant but for now it is just
@@ -7,7 +7,8 @@ from kafka import KafkaConsumer  # consumer of events
 
 # acquire the consumer
 # (you will need to change this to your bootstrap server's IP addr)
-consumer = KafkaConsumer(bootstrap_servers="localhost:9092,12.117.148.142:9092")
+consumer = KafkaConsumer(
+    bootstrap_servers="localhost:9092,12.117.148.142:9092")
 
 # subscribe to topic
 consumer.subscribe(topics=["test"])
@@ -25,7 +26,7 @@ for msg in consumer:
     # Note that I am not showing code to obtain the incoming data as JSON
     # nor am I showing any code to connect to a backend database sink to
     # dump the incoming data. You will have to do that for the assignment.
-    print (str(msg.value, 'ascii'))
+    print(str(msg.value, 'ascii'))
 
 # we are done. As such, we are not going to get here as the above loop
 # is a forever loop.
