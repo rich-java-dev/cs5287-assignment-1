@@ -1,0 +1,16 @@
+Setting up VMs manually with virtual box is a time consuming process.
+In addition to having to manually configure many steps, including selecting ISO, to establishing the size of disk, memory, and cpu to provision.
+Ubuntu then requires running in 'install mode' which takes a lot of time and requires manual steps to keep processing.
+Afterwards, additional steps are requires to update the system and then restart.
+
+Doing this over and over again would definitely be time consuming.
+
+Provisioning the cloud instances was as bit easier: 
+There were fewer steps, mostly limited to selecting the ISO/image, a flavor, and then network configuration including security groups, IP, and key assignment.
+Although there were fewer steps and it did seem to run quickly, this could be tedious if managing hundreds or even thousands of instances.
+
+Configuring kafka and getting the cluster to initially work was probably one of the hardest parts.
+In addition to having to research and figure out that IPv4 had to be configured manually, there was trial and error getting the server.properties files just right.
+Once those obstacles were overcome, actually deploying the console consumer/producer working was very rewarding.
+
+Pretty comfortable navigating with CLI and using Bash and linux, so those aspects weren't too bad, but still required a lot of manual steps such as grabbing/running them properly/as needed.
