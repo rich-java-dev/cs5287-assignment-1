@@ -1,0 +1,5 @@
+Deploy Cloud instances - RW/RM
+topic/discussion RW/RM
+develop Producer - RW/RM
+draft video/presentation - RW
+report of efforts - RW
