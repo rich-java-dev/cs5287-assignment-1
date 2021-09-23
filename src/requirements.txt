@@ -1,6 +1,7 @@
 bson==0.5.10
 certifi==2021.5.30
 charset-normalizer==2.0.6
+CouchDB==1.2
 idna==3.2
 kafka-python==2.0.2
 lxml==4.6.3

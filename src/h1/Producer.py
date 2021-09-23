@@ -1,13 +1,15 @@
+# %%
 import argparse
 import yfinance as yf  # downloading data from yahoo finance api stock data
 from kafka import KafkaProducer  # kafka client publisher
 import json  # used as serializer context
 from time import sleep
+import pandas as pd
 
 #
 #  PRICER - Produces Stock price data onto a given Kafka server
 #
-
+# %%
 parser = argparse.ArgumentParser(
     description='Look up historic stock data for a given ticket (topic)')
 
@@ -34,9 +36,7 @@ server = args.server
 # sanitize input here...
 
 # %%
-# from kafka import KafkaProducer  # kafka client publisher
-# server = '129.114.26.60:9092'
-
+# connect producer to kafka server
 print(f"attempting to connect to kafka server: '{server}' ...")
 # acquire the producer
 # (you will need to change this to your bootstrap server's IP addr)
@@ -47,21 +47,20 @@ producer = KafkaProducer(bootstrap_servers=[server],
 print("connected.")
 
 # %%
-# import yfinance as yf
-# topic = 'FCEL'
-# start_date = '2021-01-01'
-# end_date = '2021-09-01'
-
+# download stock data
 data = yf.download(tickers=topic, start=start_date, end=end_date)
+
+# format the index as an actual column
+data['date'] = data.index
+data['date'] = data['date'].dt.strftime('%m/%d/%Y') # format date into mm/dd/yyyy format
+
+# serialize data into json
 data['json'] = data.apply(lambda x: x.to_json(), axis=1)
 
 # %%
-# import json
-# from bson import json_util
-
+# process the data and publish each 'row' to Kafka server
 for row in data.json.iteritems():
-    val = str(row[1])
-
-    producer.send(topic, bytes(val, 'utf-8'))
-    #producer.send(topic, json.dumps(row, default=json_util.default).encode('utf-8'))
+    val = row[1]
+    print(val)
+    producer.send(topic, bytes(val, 'utf-8')) # encode as utf-8 string
     sleep(1)
