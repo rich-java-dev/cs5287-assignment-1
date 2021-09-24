@@ -11,7 +11,7 @@ from couchdb import Server
 parser = argparse.ArgumentParser(
     description='Register as consumer to kafka server, recieve and persist stock price data into couchdb')
 
-parser.add_argument('--topic', '-topic', '--t', '-t', nargs='+', default='FCEL',
+parser.add_argument('--topic', '-topic', '--t', '-t', default='FCEL',
                     type=str, help='a specific topic (ticker) to register as consumer with')
 
 parser.add_argument('--server', '-server', default='129.114.26.60:9092',
