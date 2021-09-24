@@ -13,7 +13,7 @@ import pandas as pd
 parser = argparse.ArgumentParser(
     description='Look up historic stock data for a given ticket (topic)')
 
-parser.add_argument('--topic', '-topic', '--t', '-t', nargs='+', default='FCEL',
+parser.add_argument('--topic', '-topic', '--t', '-t', default='FCEL',
                     type=str, help='a specific topic (ticker) to look up on ')
 
 parser.add_argument('--start_date', '--start', '-start', '-begin',
@@ -54,7 +54,7 @@ data = yf.download(tickers=topic, start=start_date, end=end_date)
 
 # format the index as an actual column
 data['date'] = data.index
-data['date'] = data['date'].dt.strftime('%y-%m-%d') # format date into yyyy-mm-dd format
+data['date'] = data['date'].dt.strftime('%Y-%m-%d') # format date into mm/dd/yyyy format
 
 # serialize data into json
 data['json'] = data.apply(lambda x: x.to_json(), axis=1)
