@@ -36,13 +36,20 @@ There are 4 independent hosts in this system.
 	> ssh -i /path/to/key cc@<floating.public.ip>
 - configuring ufw (Ubuntu's uncomplicated firewall)
 	 > sudo ufw <status|enable|disable>
+	 
 	 > sudo ufw allow from \<trusted ip>
+	 
+- transferring files via scp - we will use this to deploy the python scripts to run:
+> scp -i {key_file} [user@source:][source_file] [user@destination:][dest_file]
+
+> $ scp -i /c/users/rwhite/.ssh/t6-rw1 /c/vanderbilt/CS5287/cs5287-assignment-1/src/h3/Consumer.py cc@129.114.26.60:Consumer.py
 
 ## Kafka installation/set-up
 
 prerequisites:
 install java and configure kafka env variable to use IPv4
 > sudo apt install default-jre -y
+
 >  export KAFKA_OPTS="-Djava.net.preferIPv4Stack=True"
 
 download/untar:
@@ -64,6 +71,31 @@ checking running nodes:
 - bin/zookeeper-shell.sh localhost:2181 get /brokers/ids/0
 - bin/zookeeper-shell.sh localhost:2181 get /brokers/ids/1
 
+## CouchDB configuration/set-up
+
+> sudo apt update && sudo apt install -y curl apt-transport-https gnupg
+
+> curl https://couchdb.apache.org/repo/keys.asc | gpg --dearmor | sudo tee /usr/share/keyrings/couchdb-archive-keyring.gpg >/dev/null 2>&1
+
+> source /etc/os-release
+
+> echo  "deb [signed-by=/usr/share/keyrings/couchdb-archive-keyring.gpg] https://apache.jfrog.io/artifactory/couchdb-deb/ _${_VERSION_CODENAME_}_ main" | sudo tee etc/apt/sources.list.d/couchdb.list >/dev/null
+
+> sudo apt update  
+
+> sudo apt install -y couchdb
+
+### test Couchdb:
+
+> curl http://127.0.0.1:5984/
+
+expected response:
+
+> {"couchdb":"Welcome","version":"3.1.1","git_sha":"ce596c65d","uuid":"46d26c41cd949d16e4c3f10ca5b85fb8","features":["access-ready","partitioned","pluggable-storage-engines","reshard","scheduler"],"vendor":{"name":"The Apache Software Foundation"}}
+
+### install python couchdb package
+> pip install couchdb
+
 
 ## Producers
 
@@ -72,6 +104,7 @@ checking running nodes:
 
 Install Python
 > sudo apt install python
+
 > sudo apt install pip
 
 Install python dependencies via pip
@@ -90,6 +123,38 @@ Review Producer options
   --server SERVER, -server SERVER
                         the kafka server/node to register as publisher with
 
-Run Producer
- > python3 src/h1/Producer.py --topic FCEL --start_date 2021-01-01 --end_date 2021-09-21
+Run Producer(s) on multiple hosts
+ > python3 src/h1/Producer.py --topic APPL --start_date 2021-01-01 --end_date 2021-09-24 &
 
+> python3 src/h1/Producer.py --topic MSFT --start_date 2021-01-01 --end_date 2021-09-24 &
+
+
+## Consumers
+
+The Consumer app is founder under src/h3/Consumer.py
+
+This app behaves as a Kafka Consumer and interfaces with the CouchDB server.
+
+Install Python
+> sudo apt install python
+> sudo apt install pip
+
+Install python dependencies via pip
+> pip install -r src/requirements.txt
+
+Review Producer options
+
+> python3 h3/Consumer.py --help
+> optional arguments:
+  -h, --help            show this help message and exit
+  --topic TOPIC [TOPIC ...], -topic TOPIC [TOPIC ...], --t TOPIC [TOPIC ...], -t TOPIC [TOPIC ...]
+                        a specific topic (ticker) to register as consumer with
+  --server SERVER, -server SERVER
+                        the kafka server/node to register as consumer with
+  --couchdb COUCHDB, -couchdb COUCHDB, --datastore COUCHDB, -datastore COUCHDB
+                        the couchdb server to post against
+
+Run multiple Consumers on h3 host
+> python3 Consumer.py --topic MSFT &
+
+> python3 Consumer.py --topic APPL &

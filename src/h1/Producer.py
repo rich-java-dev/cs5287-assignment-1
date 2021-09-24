@@ -35,9 +35,11 @@ server = args.server
 
 # sanitize input here...
 
+print(f"Producer expecting to publish on topic {topic} from {start_date} to {end_date}")
+
 # %%
 # connect producer to kafka server
-print(f"attempting to connect to kafka server: '{server}' ...")
+print(f"attempting to register to kafka server: '{server}' ...")
 # acquire the producer
 # (you will need to change this to your bootstrap server's IP addr)
 producer = KafkaProducer(bootstrap_servers=[server],
@@ -52,7 +54,7 @@ data = yf.download(tickers=topic, start=start_date, end=end_date)
 
 # format the index as an actual column
 data['date'] = data.index
-data['date'] = data['date'].dt.strftime('%m/%d/%Y') # format date into mm/dd/yyyy format
+data['date'] = data['date'].dt.strftime('%y-%m-%d') # format date into yyyy-mm-dd format
 
 # serialize data into json
 data['json'] = data.apply(lambda x: x.to_json(), axis=1)
